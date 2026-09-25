@@ -1,1 +1,834 @@
 
+html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UrbanSathi - Smart City Resource Management System</title>
+<style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    
+    :root {
+        --primary: #2563eb;
+        --secondary: #0f766e;
+        --dark: #1e293b;
+        --light: #f1f5f9;
+        --accent: #f59e0b;
+        --danger: #dc2626;
+        --success: #16a34a;
+        --white: #ffffff;
+    }
+    
+    body { background: var(--light); color: var(--dark); line-height: 1.6; }
+    
+    /* Navigation */
+    nav {
+        background: var(--white);
+        padding: 1rem 5%;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .logo {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: var(--primary);
+    }
+    
+    .logo-icon {
+        width: 40px;
+        height: 40px;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.2rem;
+    }
+    
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a {
+        text-decoration: none;
+        color: var(--dark);
+        font-weight: 500;
+        cursor: pointer;
+        transition: color 0.3s;
+    }
+    .nav-links a:hover { color: var(--primary); }
+    .nav-links a.active { color: var(--primary); border-bottom: 2px solid var(--primary); }
+    
+    .auth-buttons { display: flex; gap: 0.5rem; }
+    
+    .btn {
+        padding: 0.6rem 1.2rem;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: 500;
+        transition: all 0.3s;
+        font-size: 0.95rem;
+    }
+    .btn-primary { background: var(--primary); color: white; }
+    .btn-primary:hover { background: #1d4ed8; transform: translateY(-2px); }
+    .btn-secondary { background: var(--secondary); color: white; }
+    .btn-outline { background: transparent; border: 2px solid var(--primary); color: var(--primary); }
+    .btn-outline:hover { background: var(--primary); color: white; }
+    
+    /* Pages */
+    .page { display: none; padding: 2rem 5%; min-height: calc(100vh - 80px); }
+    .page.active { display: block; }
+    
+    /* Hero */
+    .hero {
+        background: linear-gradient(135deg, #2563eb 0%, #0f766e 100%);
+        color: white;
+        padding: 4rem 5%;
+        text-align: center;
+        border-radius: 16px;
+        margin-bottom: 3rem;
+    }
+    .hero h1 { font-size: 3rem; margin-bottom: 1rem; }
+    .hero p { font-size: 1.2rem; margin-bottom: 2rem; opacity: 0.95; }
+    
+    /* Stats */
+    .stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 3rem;
+    }
+    .stat-card {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        text-align: center;
+    }
+    .stat-icon {
+        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
+    }
+    .stat-number {
+        font-size: 2rem;
+        font-weight: bold;
+        color: var(--primary);
+    }
+    .stat-label { color: #64748b; font-size: 0.9rem; }
+    
+    /* Features Grid */
+    .section-title {
+        text-align: center;
+        font-size: 2rem;
+        margin-bottom: 2rem;
+        color: var(--dark);
+    }
+    
+    .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 3rem;
+    }
+    .feature-card {
+        background: white;
+        padding: 2rem;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        transition: transform 0.3s, box-shadow 0.3s;
+        cursor: pointer;
+    }
+    .feature-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+    .feature-icon {
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.8rem;
+        margin-bottom: 1rem;
+    }
+    .feature-card h3 { margin-bottom: 0.5rem; }
+    .feature-card p { color: #64748b; }
+    
+    /* Report Form */
+    .form-container {
+        max-width: 700px;
+        margin: 0 auto;
+        background: white;
+        padding: 2.5rem;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    }
+    .form-group { margin-bottom: 1.5rem; }
+    .form-group label { display: block; margin-bottom: 0.5rem; font-weight: 500; }
+    .form-group input, .form-group select, .form-group textarea {
+        width: 100%;
+        padding: 0.75rem;
+        border: 2px solid #e2e8f0;
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: border-color 0.3s;
+    }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+        outline: none;
+        border-color: var(--primary);
+    }
+    .form-group textarea { resize: vertical; min-height: 120px; }
+    
+    /* Complaints Table */
+    .table-container {
+        background: white;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { padding: 1rem; text-align: left; border-bottom: 1px solid #e2e8f0; }
+    th { background: var(--light); font-weight: 600; }
+    tr:hover { background: #f8fafc; }
+    
+    .status-badge {
+        padding: 0.3rem 0.8rem;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 500;
+    }
+    .status-pending { background: #fef3c7; color: #92400e; }
+    .status-progress { background: #dbeafe; color: #1e40af; }
+    .status-resolved { background: #d1fae5; color: #065f46; }
+    
+    /* Modal */
+    .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.5);
+        z-index: 2000;
+        justify-content: center;
+        align-items: center;
+    }
+    .modal.active { display: flex; }
+    .modal-content {
+        background: white;
+        padding: 2rem;
+        border-radius: 12px;
+        max-width: 400px;
+        width: 90%;
+        position: relative;
+    }
+    .modal-close {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        cursor: pointer;
+    }
+    
+    /* Map */
+    .map-container {
+        background: white;
+        border-radius: 12px;
+        height: 500px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        position: relative;
+        overflow: hidden;
+        background: linear-gradient(135deg, #e0f2fe 0%, #d1fae5 100%);
+    }
+    .map-pin {
+        position: absolute;
+        width: 30px;
+        height: 30px;
+        background: var(--danger);
+        border-radius: 50% 50% 50% 0;
+        transform: rotate(-45deg);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: bold;
+        cursor: pointer;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        animation: bounce 2s infinite;
+    }
+    .map-pin span { transform: rotate(45deg); }
+    @keyframes bounce {
+        0%, 100% { transform: rotate(-45deg) translateY(0); }
+        50% { transform: rotate(-45deg) translateY(-10px); }
+    }
+    
+    /* Dashboard */
+    .dashboard-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+    .dash-card {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    }
+    
+    /* Analytics Chart */
+    .chart-bar {
+        background: #e2e8f0;
+        height: 30px;
+        border-radius: 4px;
+        overflow: hidden;
+        margin: 0.5rem 0;
+    }
+    .chart-fill {
+        height: 100%;
+        background: linear-gradient(90deg, var(--primary), var(--secondary));
+        display: flex;
+        align-items: center;
+        padding: 0 0.5rem;
+        color: white;
+        font-size: 0.85rem;
+        font-weight: 500;
+        transition: width 1s;
+    }
+    
+    /* Toast */
+    .toast {
+        position: fixed;
+        bottom: 2rem;
+        right: 2rem;
+        background: var(--success);
+        color: white;
+        padding: 1rem 1.5rem;
+        border-radius: 8px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        transform: translateX(400px);
+        transition: transform 0.3s;
+        z-index: 3000;
+    }
+    .toast.show { transform: translateX(0); }
+    
+    /* Footer */
+    footer {
+        background: var(--dark);
+        color: white;
+        padding: 2rem 5%;
+        text-align: center;
+        margin-top: 3rem;
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+        .nav-links { display: none; }
+        .hero h1 { font-size: 2rem; }
+        .hero p { font-size: 1rem; }
+    }
+</style>
+</head>
+<body>
+
+<nav>
+    <div class="logo">
+        <div class="logo-icon">🏙️</div>
+        UrbanSathi
+    </div>
+    <ul class="nav-links">
+        <li><a onclick="showPage('home')" class="active" data-page="home">Home</a></li>
+        <li><a onclick="showPage('report')" data-page="report">Report Issue</a></li>
+        <li><a onclick="showPage('track')" data-page="track">Track</a></li>
+        <li><a onclick="showPage('map')" data-page="map">Live Map</a></li>
+        <li><a onclick="showPage('dashboard')" data-page="dashboard">Dashboard</a></li>
+        <li><a onclick="showPage('resources')" data-page="resources">Resources</a></li>
+    </ul>
+    <div class="auth-buttons">
+        <button class="btn btn-outline" onclick="openModal('loginModal')">Login</button>
+        <button class="btn btn-primary" onclick="openModal('registerModal')">Sign Up</button>
+    </div>
+</nav>
+
+<!-- HOME PAGE -->
+<div id="home" class="page active">
+    <div class="hero">
+        <h1>Building Smarter Cities Together</h1>
+        <p>Empowering citizens and city departments to collaborate for better urban living through technology</p>
+        <button class="btn btn-outline" onclick="showPage('report')" style="background: white; color: var(--primary); border: none;">Report an Issue</button>
+    </div>
+    
+    <div class="stats">
+        <div class="stat-card">
+            <div class="stat-icon">📋</div>
+            <div class="stat-number" id="totalReports">247</div>
+            <div class="stat-label">Issues Reported</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">✅</div>
+            <div class="stat-number" id="resolvedIssues">189</div>
+            <div class="stat-label">Issues Resolved</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">👷</div>
+            <div class="stat-number">52</div>
+            <div class="stat-label">Active Workers</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">⏱️</div>
+            <div class="stat-number">3.2</div>
+            <div class="stat-label">Avg. Response (days)</div>
+        </div>
+    </div>
+    
+    <h2 class="section-title">Key Features</h2>
+    <div class="features-grid">
+        <div class="feature-card" onclick="showPage('report')">
+            <div class="feature-icon">📝</div>
+            <h3>Civic Issue Reporting</h3>
+            <p>Report problems like potholes, streetlight failures, garbage, water issues with photos and location.</p>
+        </div>
+        <div class="feature-card" onclick="showPage('track')">
+            <div class="feature-icon">🔍</div>
+            <h3>Complaint Tracking</h3>
+            <p>Track your complaints in real-time with status updates and notifications.</p>
+        </div>
+        <div class="feature-card" onclick="showPage('resources')">
+            <div class="feature-icon">🚛</div>
+            <h3>Resource Allocation</h3>
+            <p>Smart allocation of city resources including workers, vehicles, and equipment.</p>
+        </div>
+        <div class="feature-card" onclick="showPage('dashboard')">
+            <div class="feature-icon">📊</div>
+            <h3>Task Management</h3>
+            <p>Departments manage tasks efficiently with priority-based assignment and tracking.</p>
+        </div>
+        <div class="feature-card" onclick="showPage('map')">
+            <div class="feature-icon">📍</div>
+            <h3>Location Monitoring</h3>
+            <p>GIS-based monitoring of issues across the city with real-time mapping.</p>
+        </div>
+        <div class="feature-card" onclick="showPage('dashboard')">
+            <div class="feature-icon">📈</div>
+            <h3>Analytics & Insights</h3>
+            <p>Comprehensive analytics dashboard with trends, KPIs, and performance metrics.</p>
+        </div>
+    </div>
+</div>
+
+<!-- REPORT PAGE -->
+<div id="report" class="page">
+    <h2 class="section-title">Report a Civic Issue</h2>
+    <div class="form-container">
+        <form id="reportForm" onsubmit="submitReport(event)">
+            <div class="form-group">
+                <label>Your Name</label>
+                <input type="text" id="citizenName" required placeholder="Enter your full name">
+            </div>
+            <div class="form-group">
+                <label>Email / Phone</label>
+                <input type="text" id="contact" required placeholder="your@email.com or phone">
+            </div>
+            <div class="form-group">
+                <label>Issue Category</label>
+                <select id="category" required>
+                    <option value="">Select a category</option>
+                    <option value="Roads">🛣️ Roads & Potholes</option>
+                    <option value="Streetlight">💡 Streetlight Issues</option>
+                    <option value="Garbage">🗑️ Garbage & Sanitation</option>
+                    <option value="Water">💧 Water Supply</option>
+                    <option value="Drainage">🌊 Drainage/Sewage</option>
+                    <option value="Electricity">⚡ Electricity</option>
+                    <option value="Parks">🌳 Parks & Gardens</option>
+                    <option value="Other">📋 Other</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Priority Level</label>
+                <select id="priority" required>
+                    <option value="Low">🟢 Low</option>
+                    <option value="Medium" selected>🟡 Medium</option>
+                    <option value="High">🟠 High</option>
+                    <option value="Critical">🔴 Critical</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Location / Address</label>
+                <input type="text" id="location" required placeholder="Street address or landmark">
+            </div>
+            <div class="form-group">
+                <label>Describe the Issue</label>
+                <textarea id="description" required placeholder="Provide detailed information about the issue..."></textarea>
+            </div>
+            <div class="form-group">
+                <label>Upload Photo (Optional)</label>
+                <input type="file" id="photo" accept="image/*">
+            </div>
+            <button type="submit" class="btn btn-primary" style="width: 100%; padding: 1rem;">Submit Report</button>
+        </form>
+    </div>
+</div>
+
+<!-- TRACK PAGE -->
+<div id="track" class="page">
+    <h2 class="section-title">Track Your Complaints</h2>
+    <div style="max-width: 600px; margin: 0 auto 2rem;">
+        <div style="display: flex; gap: 0.5rem;">
+            <input type="text" id="trackId" placeholder="Enter Complaint ID (e.g., US-1001)" style="flex: 1; padding: 0.75rem; border: 2px solid #e2e8f0; border-radius: 8px;">
+            <button class="btn btn-primary" onclick="trackComplaint()">Track</button>
+        </div>
+    </div>
+    
+    <h3 style="margin: 2rem 0 1rem;">All Recent Complaints</h3>
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Category</th>
+                    <th>Issue</th>
+                    <th>Location</th>
+                    <th>Priority</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="complaintsTable"></tbody>
+        </table>
+    </div>
+</div>
+
+<!-- MAP PAGE -->
+<div id="map" class="page">
+    <h2 class="section-title">Live City Issue Map</h2>
+    <p style="text-align: center; margin-bottom: 1rem; color: #64748b;">Real-time monitoring of reported issues across the city</p>
+    <div class="map-container" id="cityMap">
+        <div class="map-pin" style="top: 20%; left: 25%;" onclick="showPinInfo('Road Damage')"><span>1</span></div>
+        <div class="map-pin" style="top: 35%; left: 60%;" onclick="showPinInfo('Streetlight')"><span>2</span></div>
+        <div class="map-pin" style="top: 55%; left: 40%;" onclick="showPinInfo('Garbage')"><span>3</span></div>
+        <div class="map-pin" style="top: 70%; left: 75%;" onclick="showPinInfo('Water Leakage')"><span>4</span></div>
+        <div class="map-pin" style="top: 45%; left: 15%;" onclick="showPinInfo('Drainage')"><span>5</span></div>
+        <div style="position: absolute; top: 10px; left: 10px; background: white; padding: 1rem; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.1);">
+            <strong>📍 Active Issues: 5</strong>
+        </div>
+        <div style="position: absolute; bottom: 10px; right: 10px; background: white; padding: 1rem; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.1);">
+            🟢 Resolved: 189<br>
+            🟡 In Progress: 32<br>
+            🔴 Pending: 26
+        </div>
+    </div>
+</div>
+
+<!-- DASHBOARD PAGE -->
+<div id="dashboard" class="page">
+    <h2 class="section-title">Analytics Dashboard</h2>
+    <div class="dashboard-grid">
+        <div class="dash-card">
+            <h3>📊 Issues by Category</h3>
+            <div style="margin-top: 1rem;">
+                <div>Roads & Potholes</div>
+                <div class="chart-bar"><div class="chart-fill" style="width: 75%;">75</div></div>
+                <div>Streetlight</div>
+                <div class="chart-bar"><div class="chart-fill" style="width: 45%;">45</div></div>
+                <div>Garbage</div>
+                <div class="chart-bar"><div class="chart-fill" style="width: 60%;">60</div></div>
+                <div>Water Supply</div>
+                <div class="chart-bar"><div class="chart-fill" style="width: 35%;">35</div></div>
+                <div>Drainage</div>
+                <div class="chart-bar"><div class="chart-fill" style="width: 20%;">20</div></div>
+            </div>
+        </div>
+        
+        <div class="dash-card">
+            <h3>📈 Resolution Rate</h3>
+            <div style="text-align: center; padding: 2rem 0;">
+                <div style="font-size: 4rem; font-weight: bold; color: var(--success);">76%</div>
+                <p style="color: #64748b;">Issues resolved this month</p>
+            </div>
+            <div style="margin-top: 1rem;">
+                <div style="display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid #e2e8f0;">
+                    <span>This Week</span><strong>+12%</strong>
+                </div>
+                <div style="display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid #e2e8f0;">
+                    <span>This Month</span><strong>+8%</strong>
+                </div>
+                <div style="display: flex; justify-content: space-between; padding: 0.5rem 0;">
+                    <span>This Year</span><strong>+24%</strong>
+                </div>
+            </div>
+        </div>
+        
+        <div class="dash-card">
+            <h3>👷 Worker Performance</h3>
+            <div style="margin-top: 1rem;">
+                <div style="padding: 0.75rem; background: var(--light); border-radius: 8px; margin-bottom: 0.5rem;">
+                    <strong>Rajesh K.</strong> - Roads Dept.<br>
+                    <small>✅ 24 tasks completed</small>
+                </div>
+                <div style="padding: 0.75rem; background: var(--light); border-radius: 8px; margin-bottom: 0.5rem;">
+                    <strong>Priya M.</strong> - Sanitation<br>
+                    <small>✅ 19 tasks completed</small>
+                </div>
+                <div style="padding: 0.75rem; background: var(--light); border-radius: 8px;">
+                    <strong>Amit S.</strong> - Electrical<br>
+                    <small>✅ 17 tasks completed</small>
+                </div>
+            </div>
+        </div>
+        
+        <div class="dash-card">
+            <h3>🚨 Priority Issues</h3>
+            <div style="margin-top: 1rem;">
+                <div style="padding: 1rem; background: #fee2e2; border-left: 4px solid var(--danger); border-radius: 4px; margin-bottom: 0.5rem;">
+                    <strong>US-1042</strong> - Main water pipe burst<br>
+                    <small>Critical • Reported 2h ago</small>
+                </div>
+                <div style="padding: 1rem; background: #fef3c7; border-left: 4px solid var(--accent); border-radius: 4px; margin-bottom: 0.5rem;">
+                    <strong>US-1038</strong> - Traffic signal malfunction<br>
+                    <small>High • Reported 5h ago</small>
+                </div>
+                <div style="padding: 1rem; background: #fef3c7; border-left: 4px solid var(--accent); border-radius: 4px;">
+                    <strong>US-1035</strong> - Road cave-in<br>
+                    <small>High • Reported 8h ago</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- RESOURCES PAGE -->
+<div id="resources" class="page">
+    <h2 class="section-title">Resource Management</h2>
+    <div class="dashboard-grid">
+        <div class="dash-card">
+            <h3>🚛 Vehicles Available</h3>
+            <div style="margin-top: 1rem;">
+                <div style="display: flex; justify-content: space-between; padding: 0.5rem 0;">
+                    <span>Dump Trucks</span><strong>12/15</strong>
+                </div>
+                <div style="display: flex; justify-content: space-between; padding: 0.5rem 0;">
+                    <span>Water Tankers</span><strong>8/10</strong>
+                </div>
+                <div style="display: flex; justify-content: space-between; padding: 0.5rem 0;">
+                    <span>Repair Vans</span><strong>18/20</strong>
+                </div>
+                <div style="display: flex; justify-content: space-between; padding: 0.5rem 0;">
+                    <span>Cranes</span><strong>4/5</strong>
+                </div>
+            </div>
+        </div>
+        
+        <div class="dash-card">
+            <h3>🔧 Equipment Status</h3>
+            <div style="margin-top: 1rem;">
+                <div style="display: flex; justify-content: space-between; padding: 0.5rem 0;">
+                    <span>Generators</span><strong style="color: var(--success);">All Working</strong>
+                </div>
+                <div style="display: flex; justify-content: space-between; padding: 0.5rem 0;">
+                    <span>Tool Kits</span><strong>45/50</strong>
+                </div>
+                <div style="display: flex; justify-content: space-between; padding: 0.5rem 0;">
+                    <span>Safety Gear</span><strong>120 sets</strong>
+                </div>
+                <div style="display: flex; justify-content: space-between; padding: 0.5rem 0;">
+                    <span>Road Barriers</span><strong>67 units</strong>
+                </div>
+            </div>
+        </div>
+        
+        <div class="dash-card">
+            <h3>📦 Inventory</h3>
+            <div style="margin-top: 1rem;">
+                <div style="padding: 0.75rem; background: var(--light); border-radius: 8px; margin-bottom: 0.5rem;">
+                    <strong>Cement Bags:</strong> 250 units
+                </div>
+                <div style="padding: 0.75rem; background: var(--light); border-radius: 8px; margin-bottom: 0.5rem;">
+                    <strong>LED Bulbs:</strong> 180 units
+                </div>
+                <div style="padding: 0.75rem; background: var(--light); border-radius: 8px; margin-bottom: 0.5rem;">
+                    <strong>Water Pipes:</strong> 75 units
+                </div>
+                <div style="padding: 0.75rem; background: var(--light); border-radius: 8px;">
+                    <strong>Garbage Bags:</strong> 500 units
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- LOGIN MODAL -->
+<div id="loginModal" class="modal">
+    <div class="modal-content">
+        <button class="modal-close" onclick="closeModal('loginModal')">×</button>
+        <h2 style="margin-bottom: 1.5rem;">Login</h2>
+        <form onsubmit="login(event)">
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" required placeholder="your@email.com">
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" required placeholder="••••••••">
+            </div>
+            <button type="submit" class="btn btn-primary" style="width: 100%;">Login</button>
+            <p style="text-align: center; margin-top: 1rem;">Don't have an account? <a href="#" onclick="closeModal('loginModal'); openModal('registerModal')" style="color: var(--primary);">Sign Up</a></p>
+        </form>
+    </div>
+</div>
+
+<!-- REGISTER MODAL -->
+<div id="registerModal" class="modal">
+    <div class="modal-content">
+        <button class="modal-close" onclick="closeModal('registerModal')">×</button>
+        <h2 style="margin-bottom: 1.5rem;">Sign Up</h2>
+        <form onsubmit="register(event)">
+            <div class="form-group">
+                <label>Full Name</label>
+                <input type="text" required placeholder="John Doe">
+            </div>
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" required placeholder="your@email.com">
+            </div>
+            <div class="form-group">
+                <label>I am a</label>
+                <select required>
+                    <option value="citizen">Citizen</option>
+                    <option value="worker">Worker</option>
+                    <option value="department">Department Officer</option>
+                    <option value="admin">Administrator</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" required placeholder="••••••••">
+            </div>
+            <button type="submit" class="btn btn-primary" style="width: 100%;">Create Account</button>
+        </form>
+    </div>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<footer>
+    <p>© 2025 UrbanSathi - Smart City Resource Management System | Building Better Cities Together</p>
+    <p style="margin-top: 0.5rem; opacity: 0.7;">📧 contact@urbansathi.gov | 📞 1800-XXX-XXXX</p>
+</footer>
+
+<script>
+    // Sample complaints data
+    const complaints = [
+        { id: 'US-1042', category: 'Water', issue: 'Water pipe burst', location: 'MG Road, Sector 5', priority: 'Critical', status: 'progress' },
+        { id: 'US-1041', category: 'Roads', issue: 'Large pothole', location: 'Park Street', priority: 'High', status: 'progress' },
+        { id: 'US-1040', category: 'Streetlight', issue: 'Streetlight not working', location: 'Sector 12, Block A', priority: 'Medium', status: 'pending' },
+        { id: 'US-1039', category: 'Garbage', issue: 'Garbage not collected', location: 'Green Avenue', priority: 'Medium', status: 'resolved' },
+        { id: 'US-1038', category: 'Electricity', issue: 'Traffic signal down', location: 'Main Square', priority: 'High', status: 'progress' },
+        { id: 'US-1037', category: 'Drainage', issue: 'Blocked drainage', location: 'Lake View Road', priority: 'Medium', status: 'resolved' },
+        { id: 'US-1036', category: 'Parks', issue: 'Broken bench in park', location: 'Central Park', priority: 'Low', status: 'pending' }
+    ];
+
+    function showPage(pageId) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.getElementById(pageId).classList.add('active');
+        document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+        document.querySelector(`.nav-links a[data-page="${pageId}"]`)?.classList.add('active');
+        window.scrollTo(0, 0);
+        if (pageId === 'track') loadComplaints();
+    }
+
+    function openModal(id) {
+        document.getElementById(id).classList.add('active');
+    }
+
+    function closeModal(id) {
+        document.getElementById(id).classList.remove('active');
+    }
+
+    function showToast(message, color = '#16a34a') {
+        const toast = document.getElementById('toast');
+        toast.textContent = message;
+        toast.style.background = color;
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 3000);
+    }
+
+    function submitReport(e) {
+        e.preventDefault();
+        const newId = 'US-' + (1043 + complaints.length);
+        const complaint = {
+            id: newId,
+            category: document.getElementById('category').value,
+            issue: document.getElementById('description').value.substring(0, 40) + '...',
+            location: document.getElementById('location').value,
+            priority: document.getElementById('priority').value,
+            status: 'pending'
+        };
+        complaints.unshift(complaint);
+        document.getElementById('totalReports').textContent = parseInt(document.getElementById('totalReports').textContent) + 1;
+        showToast(`✅ Report submitted! Your ID: ${newId}`);
+        e.target.reset();
+        setTimeout(() => showPage('track'), 1000);
+    }
+
+    function loadComplaints() {
+        const tbody = document.getElementById('complaintsTable');
+        tbody.innerHTML = complaints.map(c => `
+            <tr>
+                <td><strong>${c.id}</strong></td>
+                <td>${c.category}</td>
+                <td>${c.issue}</td>
+                <td>${c.location}</td>
+                <td>${c.priority}</td>
+                <td><span class="status-badge status-${c.status}">${c.status === 'progress' ? 'In Progress' : c.status.charAt(0).toUpperCase() + c.status.slice(1)}</span></td>
+                <td><button class="btn btn-outline" style="padding: 0.3rem 0.8rem; font-size: 0.85rem;" onclick="showToast('📋 Viewing details for ${c.id}', '#2563eb')">View</button></td>
+            </tr>
+        `).join('');
+    }
+
+    function trackComplaint() {
+        const id = document.getElementById('trackId').value.trim();
+        const found = complaints.find(c => c.id === id);
+        if (found) {
+            showToast(`Found ${found.id} - Status: ${found.status === 'progress' ? 'In Progress' : found.status}`, '#2563eb');
+        } else {
+            showToast('❌ Complaint ID not found', '#dc2626');
+        }
+    }
+
+    function showPinInfo(type) {
+        showToast(`📍 Issue at this location: ${type}`, '#2563eb');
+    }
+
+    function login(e) {
+        e.preventDefault();
+        showToast('✅ Logged in successfully!');
+        closeModal('loginModal');
+    }
+
+    function register(e) {
+        e.preventDefault();
+        showToast('✅ Account created successfully!');
+        closeModal('registerModal');
+    }
+
+    // Initialize
+    loadComplaints();
+</script>
+
+</body>
+</html>
